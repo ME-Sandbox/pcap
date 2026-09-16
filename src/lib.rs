@@ -150,6 +150,18 @@ impl Error {
     }
 }
 
+// Lossy, for a string that is only displayed: a description in the local Windows code page is
+// worth showing anyway. Backported from upstream #413 together with its only caller.
+unsafe fn cstr_to_string_lossy(ptr: *const libc::c_char) -> Option<String> {
+    if ptr.is_null() {
+        None
+    } else {
+        Some(CStr::from_ptr(ptr as _).to_string_lossy().into_owned())
+    }
+}
+
+// Strict, for a string that goes back to libpcap: a device name that will not round-trip is worse
+// than no name at all.
 unsafe fn cstr_to_string(ptr: *const libc::c_char) -> Result<Option<String>, Error> {
     let string = if ptr.is_null() {
         None

@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+### Changed
+
+- `Device::list` and `Device::lookup` leave out an interface whose name is not valid UTF-8
+  instead of failing the whole enumeration with `Error::MalformedError`, and keep a description
+  that is not valid UTF-8 lossily rather than rejecting it.
+
+  Backported from upstream PR #413 (`c1ae540`) onto the 2.5.0 release. The upstream commit sits
+  on top of the 3.0.0 preparation work and does not cherry-pick onto this tag; the change to
+  `Device` is upstream's, and `cstr_to_string_lossy` is the one helper it needs out of PR #404.
+  This branch carries nothing of its own and exists only until an upstream release includes
+  #413.
+
 ## [2.5.0] - 2026-08-15
 
 ### Added
